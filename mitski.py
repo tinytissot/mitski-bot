@@ -7,7 +7,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from datetime import datetime
 from datetime import date
-import time
+#import time
 
 # Parse credentials
 with open("twitter.json", "r") as json_file:
@@ -47,23 +47,16 @@ def write_song_info(artist, day):
         page = random.randint(1,4)
 
     genius_search_url = f"http://api.genius.com/search?q={artist}&access_token={CLIENT_ACCESS_TOKEN}&page={page}&per_page=15"
-    response = requests.get(genius_search_url)
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
+    response = requests.get(genius_search_url, headers=headers)
     json_data = response.json()
 
     song_index = random.randint(0,9)
     data = json_data["response"]['hits'][song_index]
+    title = data['result']['title'] + "\n"
     path = data['result']['path'][1:]
-    with open('output.json', "w") as json_file:
-        json.dump(data, json_file, indent=2)
-    
-    # Clear the text file then write to
-    with open('lines.txt','w') as txt_file:
-        txt_file.write('')
-
-    with open('lines.txt','a') as txt_file:
-        title = data['result']['title'] + "\n"
-        txt_file.write(title)
-
+    #with open('output.json', "w") as json_file:
+        #json.dump(data, json_file, indent=2)
     return path, title
 
 def write_lyrics(path):
